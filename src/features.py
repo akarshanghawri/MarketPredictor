@@ -31,6 +31,11 @@ df["CLOSE_TO_SMA50"] = ((df["CLOSE"] - df["SMA_50"])/df["SMA_50"] * 100 )
 df["EMA_12"] = df["CLOSE"].ewm(span=12, adjust=False).mean()
 df["EMA_26"] = df["CLOSE"].ewm(span=26, adjust=False).mean()
 
+# MACD 
+df["MACD_LINE"] = df["EMA_12"] - df["EMA_26"]
+df["MACD_SIGNAL"] = df["MACD_LINE"].ewm(span=9, adjust=False).mean()
+df["MACD_HIST"] = df["MACD_LINE"] - df["MACD_SIGNAL"]
+
 # drop NaN values 
 
 
