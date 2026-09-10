@@ -48,6 +48,12 @@ avg_loss = loss.rolling(14).mean()
 RS = avg_gain / avg_loss
 df["RSI_14"] = 100 - (100 / (1 + RS))
 
+# Bollinger Bands
+df["BB_UPPER"] = df["SMA_20"] + (2 * df["CLOSE"].rolling(window=20).std())
+df["BB_LOWER"] = df["SMA_20"] - (2 * df["CLOSE"].rolling(window=20).std())
+df["BB_WIDTH"] = (df["BB_UPPER"] - df["BB_LOWER"]) / df["SMA_20"]
+df["BB_PCT_B"] = (df["CLOSE"] - df["BB_LOWER"]) / (df["BB_UPPER"] - df["BB_LOWER"])
+
 # drop NaN values 
 
 
