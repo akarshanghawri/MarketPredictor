@@ -36,6 +36,18 @@ df["MACD_LINE"] = df["EMA_12"] - df["EMA_26"]
 df["MACD_SIGNAL"] = df["MACD_LINE"].ewm(span=9, adjust=False).mean()
 df["MACD_HIST"] = df["MACD_LINE"] - df["MACD_SIGNAL"]
 
+# RSI
+change = df["CLOSE"].diff()
+
+gain = change.where(change > 0, 0)
+loss = -change.where(change < 0, 0)
+
+avg_gain = gain.rolling(14).mean()
+avg_loss = loss.rolling(14).mean()
+
+RS = avg_gain / avg_loss
+df["RSI_14"] = 100 - (100 / (1 + RS))
+
 # drop NaN values 
 
 
