@@ -3,15 +3,17 @@ import os
 
 df = pd.read_csv('data/processed/data.csv')
 
+# Label
 # if yesterdays close < todays close (label 1) else (label 0)
 next_close = df["CLOSE"].shift(-1)
-
 df["LABEL"] = (next_close > df["CLOSE"]).astype('Int64')
 
 # wherever shifted value is missing, make label to Nan
 df.loc[next_close.isna(), "LABEL"] = pd.NA
 
-df["PCT_CHANGE"] = ((next_close - df["CLOSE"]) / df["CLOSE"] * 100).round(2)
+# Percentage Change
+prv_close = df["CLOSE"].shift(1)
+df["PCT_CHANGE"] = ((df["CLOSE"] - prv_close) / prv_close * 100).round(2)
 
 df["PCT_CHANGE_5D"] = ((df["CLOSE"] - df["CLOSE"].shift(5))/ df["CLOSE"].shift(5) * 100).round(2)
 
@@ -60,8 +62,14 @@ df["VOLATILITY_20"] = df["PCT_CHANGE"].rolling(20).std()
 
 df["HIGH_LOW_RANGE"] = (df["HIGH"] - df["LOW"]) / df["CLOSE"]
 
-# drop NaN values 
+# Volume 
+prv_volume = df["VOLUME"].shift(1)
+df["VOLUME_CHANGE"] = ((df["VOLUME"] - prv_volume) / prv_volume * 100)
+df["VOLUME_SMA_10"] = df["VOLUME"].rolling(window=10).mean()
+df["VOLUME_RATIO"] = df["VOLUME"] / df["VOLUME_SMA_10"]
 
+# drop NaN values 
+df = df.dropna()
 
 # save the updated df 
 df.to_csv("data/processed/data.csv", index=False)
