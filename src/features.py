@@ -54,6 +54,12 @@ df["BB_LOWER"] = df["SMA_20"] - (2 * df["CLOSE"].rolling(window=20).std())
 df["BB_WIDTH"] = (df["BB_UPPER"] - df["BB_LOWER"]) / df["SMA_20"]
 df["BB_PCT_B"] = (df["CLOSE"] - df["BB_LOWER"]) / (df["BB_UPPER"] - df["BB_LOWER"])
 
+# Volatility and Volume 
+df["VOLATILITY_10"] = df["PCT_CHANGE"].rolling(10).std()
+df["VOLATILITY_20"] = df["PCT_CHANGE"].rolling(20).std()
+
+df["HIGH_LOW_RANGE"] = (df["HIGH"] - df["LOW"]) / df["CLOSE"]
+
 # drop NaN values 
 
 
