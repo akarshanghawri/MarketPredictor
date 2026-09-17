@@ -5,3 +5,5 @@
 - [Understanding pandas rolling](https://medium.com/@whyamit101/understanding-pandas-rolling-f8f6d6796c07) — SMA and rolling std implementation
 - [Understanding pandas ewm](https://medium.com/@whyamit404/understanding-pandas-ewm-what-it-does-and-why-its-useful-f4d0f7f0334d) — EMA for MACD
 - [Understanding MACD](https://www.investopedia.com/terms/m/macd.asp) - MACD, MACD formula
+
+- [Understand BB](https://medium.com/@financial_python/how-to-plot-bollinger-bands-in-python-1d7cc95ad9af) - Bollinger Bands
