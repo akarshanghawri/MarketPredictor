@@ -4,7 +4,7 @@ import os
 df = pd.read_csv('data/processed/data.csv')
 
 # Label
-# if yesterdays close < todays close (label 1) else (label 0)
+# if tomorrow's close > todays close (label 1) else (label 0)
 next_close = df["CLOSE"].shift(-1)
 df["LABEL"] = (next_close > df["CLOSE"]).astype('Int64')
 
