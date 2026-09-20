@@ -1,5 +1,4 @@
 import pandas as pd 
-import os 
 
 df = pd.read_csv('data/processed/data.csv')
 
@@ -8,8 +7,12 @@ df = pd.read_csv('data/processed/data.csv')
 next_close = df["CLOSE"].shift(-1)
 df["LABEL"] = (next_close > df["CLOSE"]).astype('Int64')
 
-# wherever shifted value is missing, make label to Nan
-df.loc[next_close.isna(), "LABEL"] = pd.NA
+df.loc[next_close.isna(), "LABEL"] = pd.NA      # wherever shifted value is missing, make label to Nan
+
+# Label - 5 days 
+next_close_5D = df["CLOSE"].shift(-5)
+df["LABEL_5D"] = (next_close_5D > df["CLOSE"]).astype('Int64')
+df.loc[next_close_5D.isna(), "LABEL_5D"] = pd.NA     
 
 # Percentage Change
 prv_close = df["CLOSE"].shift(1)
@@ -72,4 +75,4 @@ df["VOLUME_RATIO"] = df["VOLUME"] / df["VOLUME_SMA_10"]
 df = df.dropna()
 
 # save the updated df 
-df.to_csv("data/processed/data.csv", index=False)
+df.to_csv("data/processed/featured_data.csv", index=False)

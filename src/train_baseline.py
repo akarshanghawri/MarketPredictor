@@ -9,9 +9,11 @@ from sklearn.metrics import (
     classification_report
 )
 
-data = pd.read_csv('data/processed/data.csv')
-X = data.drop(['LABEL','DATE','OPEN', 'HIGH', 'LOW', 'CLOSE', 'VOLUME'], axis=1)
-y = data['LABEL']
+data = pd.read_csv('data/processed/featured_data.csv')
+drop_columns = ['LABEL','LABEL_5D','DATE','OPEN', 'HIGH', 'LOW', 'CLOSE', 'VOLUME', 'SMA_5', 'SMA_10', 'SMA_20', 'SMA_50', 'EMA_12', 'EMA_26', 'BB_UPPER', 'BB_LOWER', 'VOLUME_SMA_10' ]
+
+X = data.drop(drop_columns, axis=1)
+y = data['LABEL_5D']
 
 split_point = int(len(data) * 0.8)
 
