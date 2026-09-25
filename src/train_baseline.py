@@ -10,10 +10,10 @@ from sklearn.metrics import (
 )
 
 data = pd.read_csv('data/processed/featured_data.csv')
-drop_columns = ['LABEL','LABEL_5D','DATE','OPEN', 'HIGH', 'LOW', 'CLOSE', 'VOLUME', 'SMA_5', 'SMA_10', 'SMA_20', 'SMA_50', 'EMA_12', 'EMA_26', 'BB_UPPER', 'BB_LOWER', 'VOLUME_SMA_10']
+drop_columns = ['LABEL','LABEL_5D','DATE','OPEN', 'HIGH', 'LOW', 'CLOSE', 'VOLUME', 'SMA_5', 'SMA_10', 'SMA_20', 'SMA_50', 'EMA_12', 'EMA_26', 'BB_UPPER', 'BB_LOWER', 'VOLUME_SMA_10','NIFTY_CLOSE', 'NIFTY_OPEN', 'NIFTY_HIGH', 'NIFTY_LOW', 'NIFTY_SMA_20']
 
 X = data.drop(drop_columns, axis=1)
-y = data['LABEL_5D']
+y = data['LABEL']
 
 split_point = int(len(data) * 0.8)
 
