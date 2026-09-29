@@ -1,9 +1,9 @@
-from pandas import read_csv
+import pandas as pd 
 from train_baseline import get_features_and_labels
 from sklearn.metrics import accuracy_score
 import xgboost as xgb 
 
-series = read_csv('data/processed/featured_data.csv')
+series = pd.read_csv('data/processed/featured_data.csv')
 dates = series['DATE'].values
 X,y = get_features_and_labels(series)
 
@@ -37,6 +37,21 @@ for fold in range(n_folds):
 
     model = xgb.XGBClassifier()
     model.fit(X_train,y_train)
+
+    importance = model.feature_importances_
+
+    feature_importance = pd.DataFrame({
+        'Feature': X_train.columns,
+        'Importance': importance
+    })
+
+    feature_importance = feature_importance.sort_values(
+        by='Importance',
+        ascending=False
+    )
+
+    print("\nFold", fold + 1)
+    print(feature_importance)
 
     y_pred = model.predict(X_test)
     accuracy = accuracy_score(y_test,y_pred)
