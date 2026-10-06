@@ -16,4 +16,8 @@
 
 - [Walk forward Validation](https://machinelearningmastery.com/backtest-machine-learning-models-time-series-forecasting/) - Code for walk forward validation
 
-- 
+- [Recurrent Neural Networks](https://www.geeksforgeeks.org/machine-learning/introduction-to-recurrent-neural-network/) - Understanding RNN
+
+- [Multivariate time series classification using LSTM](https://github.com/abulbasar/neural-networks/blob/master/Keras%20-%20Multivariate%20time%20series%20classification%20using%20LSTM.ipynb) - Code for LSTM 
+
+- [Long Short Term Memory](https://www.geeksforgeeks.org/deep-learning/deep-learning-introduction-to-long-short-term-memory/) - Understanding LSTM
