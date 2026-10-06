@@ -28,22 +28,39 @@ The 1-day model beat the naive baseline in every one of the 5 folds (spanning Ma
 - A ~4.3 percentage point edge is real but modest — not close to a tradeable signal once transaction costs are considered.
 - z≈2.12 clears the significance bar but isn't deep past it; a different window size or fold count could shift the result.
 - Folds share overlapping training data by construction (expanding window), so they aren't fully independent experiments.
-- Feature importance hasn't yet been inspected to confirm *why* the model outperforms naive.
+- **Feature importance is diffuse and unstable** — across folds, importance scores ranged narrowly (0.03–0.06 across 21 features, no dominant feature), and the top-ranked feature changed in every single fold (`CLOSE_TO_SMA20`, `RELATIVE_STRENGTH`, `HIGH_LOW_RANGE`, `RSI_14`, `VOLUME_CHANGE` — one per fold). This suggests the edge comes from many weakly correlated, partially redundant indicators rather than one robust, interpretable driver.
+
+### Model selection
+
+The XGBoost model above (54.33% pooled accuracy, z≈2.12) is the model used downstream (API, deployment). An LSTM was also tried as a comparison — see below — but did not outperform it, so it is not used in production.
+
+## LSTM experiment (comparison, not used in production)
+
+To test whether sequence modeling could find structure beyond the hand-crafted technical features, an LSTM was trained on 10-day sequences of the top 15 features (by importance averaged across the walk-forward folds above).
+
+**First attempt overfit badly**: a 100-unit LSTM trained for 50 fixed epochs with no validation monitoring reached ~80% training accuracy but only ~49% test accuracy — essentially memorization with no generalization.
+
+**Fixed by**: shrinking the model (32 units) and adding early stopping on validation loss, so training halts once the model stops generalizing rather than running for a fixed number of epochs.
+
+**Result after the fix**: train and validation accuracy converged closely (~50–56%), and test accuracy landed at ~49–54% across two train/test ratios — statistically indistinguishable from chance, and no better than the naive baseline.
+
+**Conclusion**: at this dataset size (~1,200 daily rows), the LSTM did not find sequential structure beyond what the engineered technical indicators already capture. This is a legitimate negative result rather than a failed experiment — it suggests more data would likely be needed for sequence modeling to add value here, and the XGBoost model remains the stronger validated option.
 
 ## Project structure
 
 ```
-MarketPredictor/
+market-direction-prediction/
 ├── data/
-│   ├── data/              # Raw RELIANCE OHLCV CSVs from NSE
-│   ├── data_nifty/        # Raw Nifty50 index CSVs
+│   ├── raw/              # Raw RELIANCE OHLCV CSVs from NSE
+│   ├── raw_nifty/        # Raw Nifty50 index CSVs
 │   └── processed/        # Merged, cleaned, feature-engineered data
 ├── src/
 │   ├── merge_data.py         # Merges/cleans RELIANCE OHLCV CSVs, adjusts for bonus issue
 │   ├── merge_nifty_data.py   # Merges Nifty50 index data into main dataset
 │   ├── features.py           # Feature engineering (~30 columns)
 │   ├── train_baseline.py     # Baseline XGBoost model (single chronological split)
-│   └── walk_forward.py       # Walk-forward validation (5-fold expanding window)
+│   ├── walk_forward.py       # Walk-forward validation (5-fold expanding window)
+│   └── train_lstm.py         # LSTM comparison experiment (chance-level, not used in production)
 └── notebooks/
     └── eda.ipynb          # Exploratory data analysis
 ```
@@ -60,7 +77,7 @@ MarketPredictor/
 - [x] Data pipeline (RELIANCE + Nifty50 merge, cleaning, bonus adjustment)
 - [x] Feature engineering (~30 indicators)
 - [x] Baseline XGBoost model + walk-forward validation
-- [ ] LSTM sequence model (compare against tree-based baseline)
+- [x] LSTM sequence model — tried as a comparison; converged to chance-level accuracy after fixing overfitting (see LSTM experiment section); XGBoost remains the production model
 - [ ] Flask API for serving predictions
 - [ ] Celery + Redis for scheduled retraining
 - [ ] Docker containerization
